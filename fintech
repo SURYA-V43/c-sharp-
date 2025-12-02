@@ -1,0 +1,19 @@
+class Program
+{
+    static void Main()
+    {
+        string transactionId = "surya0432006";
+        decimal amount = 1000000.70m;
+        bool isInternational = true;
+        decimal customerRating = 0.4m;
+        DateTime transactionTimestamp = DateTime.Now;
+        long rewardPoints = 1000;
+
+        Console.WriteLine("Transaction ID= {0}", transactionId);
+        Console.WriteLine("Amount= {0}", amount);
+        Console.WriteLine("International= {0}", isInternational);
+        Console.WriteLine("Rating= {0}", customerRating);
+        Console.WriteLine("Timestamp= {0}", transactionTimestamp);
+        Console.WriteLine("Reward Points={0}", rewardPoints);
+    }
+}
