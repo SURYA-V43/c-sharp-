@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Enter number of consumers: ");
+        int N = int.Parse(Console.ReadLine());
+
+        List<Consumer> consumers = new List<Consumer>();
+        int domesticCount = 0, commercialCount = 0;
+        double totalRevenue = 0;
+        double highestBill = 0;
+        string highestBillID = "";
+
+        for (int i = 0; i < N; i++)
+        {
+            Console.Write("Enter ConsumerID: ");
+            string id = Console.ReadLine();
+            Console.Write("Enter UnitsConsumed: ");
+            int units = int.Parse(Console.ReadLine());
+            Console.Write("Enter ConnectionType (1=Domestic, 2=Commercial): ");
+            int connType = int.Parse(Console.ReadLine());
+
+            string type = connType == 1 ? "Domestic" : "Commercial";
+            if (connType == 1) domesticCount++;
+            else commercialCount++;
+
+            double baseCharge = CalculateBaseCharge(units, connType);
+            double surcharge = baseCharge * 0.03;
+            double penalty = units > 500 ? 200 : 0;
+            double total = baseCharge + surcharge + penalty;
+            double discount = total > 2000 ? total * 0.05 : 0;
+            double finalBill = total - discount;
+
+            consumers.Add(new Consumer
+            {
+                ID = id,
+                Type = type,
+                Units = units,
+                BaseCharge = baseCharge,
+                Surcharge = surcharge,
+                Penalty = penalty,
+                Discount = discount,
+                FinalBill = finalBill
+            });
+
+            if (finalBill > highestBill)
+            {
+                highestBill = finalBill;
+                highestBillID = id;
+            }
+
+            totalRevenue += finalBill;
+        }
+
+        Console.WriteLine("\n--- Consumer Bills ---");
+        foreach (var c in consumers)
+        {
+            Console.WriteLine($"ConsumerID: {c.ID}");
+            Console.WriteLine($"ConnectionType: {c.Type}");
+            Console.WriteLine($"UnitsConsumed: {c.Units}");
+            Console.WriteLine($"BaseCharge: ₹{c.BaseCharge:F2}");
+            Console.WriteLine($"Surcharge: ₹{c.Surcharge:F2}");
+            Console.WriteLine($"Penalty: ₹{c.Penalty:F2}");
+            Console.WriteLine($"Discount: ₹{c.Discount:F2}");
+            Console.WriteLine($"FinalBill: ₹{c.FinalBill:F2}");
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("--- Month-End Summary ---");
+        Console.WriteLine($"Total consumers processed: {N}");
+        Console.WriteLine($"Total revenue: ₹{totalRevenue:F2}");
+        Console.WriteLine($"Highest single bill: ₹{highestBill:F2} (ConsumerID: {highestBillID})");
+        Console.WriteLine($"Domestic consumers: {domesticCount}");
+        Console.WriteLine($"Commercial consumers: {commercialCount}");
+    }
+
+    static double CalculateBaseCharge(int units, int connType)
+    {
+        double charge = 0;
+        if (connType == 1)
+        {
+            if (units <= 100)
+                charge = units * 1.50;
+            else if (units <= 300)
+                charge = 100 * 1.50 + (units - 100) * 2.50;
+            else
+                charge = 100 * 1.50 + 200 * 2.50 + (units - 300) * 4.00;
+        }
+        else
+        {
+            if (units <= 200)
+                charge = units * 5.00;
+            else if (units <= 500)
+                charge = 200 * 5.00 + (units - 200) * 6.50;
+            else
+                charge = 200 * 5.00 + 300 * 6.50 + (units - 500) * 8.00;
+        }
+        return charge;
+    }
+}
+
+class Consumer
+{
+    public string ID { get; set; }
+    public string Type { get; set; }
+    public int Units { get; set; }
+    public double BaseCharge { get; set; }
+    public double Surcharge { get; set; }
+    public double Penalty { get; set; }
+    public double Discount { get; set; }
+    public double FinalBill { get; set; }
+}
